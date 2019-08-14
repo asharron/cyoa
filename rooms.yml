@@ -1,0 +1,27 @@
+Entrance:
+        name: Entrance
+        connectedRooms:
+                - Bathroom
+                - Dining Hall
+                - Scary Hallway
+        description: Welcome to the entrance
+
+Bathroom:
+        name: Bathroom
+        connectedRooms:
+                - Entrance
+        description: Nothing unusual here
+
+Dining Hall:
+        name: Dining Hall
+        connectedRooms:
+                - Entrance
+                - Scary Hallway
+        description: You smell something funny You are in the Dining Hall
+
+Scary Hallway:
+        name: Scary Hallway
+        connectedRooms:
+                - Entrance
+                - Dining Hall
+        description: Run!!!!
