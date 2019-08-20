@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/blessed": "0.1.12",
     "@types/js-yaml": "3.12.1",
     "blessed": "0.1.81",
     "js-yaml": "3.13.1",
