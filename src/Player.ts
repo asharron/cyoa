@@ -15,4 +15,15 @@ export class Player {
         this.weapon = weaponManager.getWeaponByName("Sword");
         logger.log(JSON.stringify(this.weapon));
     }
+
+    getWeaponName() {
+        return this.weapon.getName();
+    }
+
+    getDamageAmount() {
+        return this.weapon.getDamage();
+    }
 }
+
+const player = new Player();
+module.exports = player;

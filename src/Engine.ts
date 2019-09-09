@@ -5,11 +5,11 @@ import { Logger } from './Logger';
 import { Player } from './Player';
 const logger: Logger = require('./Logger');
 const weaponManager = require('./WeaponManager');
+const player = require('./Player');
 
 export class Engine {
     constructor() {
         let menu = new Menu();
-        let player = new Player();
         let playerControls = new PlayerControls();
         let map = new Map("rooms.yml");
     }

@@ -32,3 +32,12 @@ Scary Hallway:
                 - Entrance
                 - Dining Hall
         description: Run!!!!
+
+Boss Room:
+        name: Boss Room
+        status: open
+        connectedRooms:
+                - Entrance
+        description: "Oh shit! Its the boss!"
+        enemies:
+                - Goblin

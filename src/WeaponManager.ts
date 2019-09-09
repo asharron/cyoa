@@ -12,13 +12,26 @@ export class WeaponManager {
     weaponsDB: WeaponDB;
 
     constructor() {
+        this.weaponsDB = {};
         this.readInWeaponsFile('weapons.yml');
     }
 
     readInWeaponsFile(filename: string) {
         let weaponsFile = fs.readFileSync(filename);
         let yamlString = weaponsFile.toString();
-        this.weaponsDB = yaml.safeLoad(yamlString);
+        let weaponsData = yaml.safeLoad(yamlString);
+        this.createWeaponsDB(weaponsData);
+    }
+
+    createWeaponsDB(weaponsData: any) {
+        Object.keys(weaponsData).forEach((key: string) => {
+            let name = weaponsData[key].name;
+            let weight = weaponsData[key].weight;
+            let damage = weaponsData[key].damage;
+
+            let weapon = new Weapon(name, weight, damage);
+            this.weaponsDB[key] = weapon;
+        });
     }
 
     getWeaponByName(weaponName: string) {

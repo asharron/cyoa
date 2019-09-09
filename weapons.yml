@@ -2,3 +2,8 @@ Sword:
     name: Sword
     damage: 5
     weight: 1
+
+Staff:
+    name: Staff
+    damage: 5
+    weight: 2

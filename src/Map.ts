@@ -6,6 +6,7 @@ import { MovementData } from './MovementData';
 import { Logger } from './Logger';
 import { Enemy } from './Enemy';
 import { EnemyManager } from './EnemyManager';
+import { AttackData } from './AttackData';
 const eventBus: EventBus = require('./EventBus');
 const logger: Logger = require('./Logger');
 const enemyManager: EnemyManager = require('./EnemyManager');
@@ -83,6 +84,17 @@ export class Map {
         return rooms;
     }
 
+    getEnemyByName(enemyName: string) {
+        let enemies: Enemy[] = this.currentRoom.getEnemies();
+        for(var enemy of enemies) {
+            let name = enemy.getName();
+            if(name === enemyName) {
+                return enemy;
+            }
+        }
+        return null;
+    }
+
     setupListeners() {
         this.eventBus.onMapBus('move', (moveInfo: MovementData) => {
             let nameToSearchFor = moveInfo.connectedRoomName;
@@ -92,7 +104,7 @@ export class Map {
                 this.currentRoom = roomToMoveTo;
                 let roomEnemies: Enemy[] = this.currentRoom.getEnemies();
                 if(roomEnemies) {
-                    roomInfo += this.currentRoom.description + "\n Shit! There are enemies in the room!\n";
+                    roomInfo += this.currentRoom.description + "\nShit! There are enemies in the room!\n";
                     roomInfo += "The enemies are:";
                     roomEnemies.forEach((enemy) => {
                         logger.log(JSON.stringify(enemy));
@@ -105,12 +117,32 @@ export class Map {
                 this.eventBus.emitOnMenuBus('updateInfo', roomInfo);
             } else {
                 logger.log("Did not find the next room.");
+                let msg = "Sorry, that room is not connected";
+                this.eventBus.emitOnMenuBus('updateInfo', msg);
             }
         });
 
         this.eventBus.onMapBus('look', () => {
             let connectedRooms = this.currentRoom.getConnectedRoomNames();
             let msg = "You look around the room and see that you can move to: " + connectedRooms.join(", ");
+            this.eventBus.emitOnMenuBus('updateInfo', msg);
+        });
+
+        this.eventBus.onMapBus('attack', (data: AttackData) => {
+            let attackedEnemy = this.getEnemyByName(data.enemyName);
+            let msg;
+            if(attackedEnemy && attackedEnemy.isAlive()) {
+                msg = `You swing at ${data.enemyName} with your ${data.weaponName} for ${data.damage} pts of damage`;
+                attackedEnemy.takeDamage(data.damage);
+                if(!attackedEnemy.isAlive()) {
+                    msg += `\nYou just slaughtered ${data.enemyName}!`;
+                } else {
+                    msg += `\nOh shit! ${data.enemyName} is mad now!`;
+                }
+            } else {
+                logger.log("Could not find the enemy in the room " + data.enemyName);
+                msg = `Sorry, that enemy is not in the room`;
+            }
             this.eventBus.emitOnMenuBus('updateInfo', msg);
         });
     }

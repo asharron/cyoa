@@ -34,7 +34,6 @@ export class EnemyManager {
             let weapon = weaponManager.getWeaponByName(weaponName);
             let hitpoints = enemyData[key].hitpoints;
 
-            //Assign it to the enemyDB
             let enemy = new Enemy(name, weapon, hitpoints);
             this.enemyDB[key] = enemy;
             enemyList.push(enemy);
