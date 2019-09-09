@@ -4,8 +4,11 @@ import { Room } from './Room';
 import { EventBus } from './EventBus';
 import { MovementData } from './MovementData';
 import { Logger } from './Logger';
+import { Enemy } from './Enemy';
+import { EnemyManager } from './EnemyManager';
 const eventBus: EventBus = require('./EventBus');
 const logger: Logger = require('./Logger');
+const enemyManager: EnemyManager = require('./EnemyManager');
 
 interface RoomCollection {
     [key: string]: Room;
@@ -48,11 +51,24 @@ export class Map {
             let name: string = room['name'];
             let description = room['description'];
             let connectedRoomNames = room['connectedRooms'];
-            let createdRoom: Room = new Room(name, description, connectedRoomNames);
+            let roomEnemies = room['enemies'];
+            let enemies: Enemy[] = [];
+            if(roomEnemies) {
+                enemies = this.createEnemies(room['enemies']);
+            }
+            let createdRoom: Room = new Room(name, description, connectedRoomNames, enemies);
             createdRooms[name] = createdRoom;
         });
 
         return createdRooms;
+    }
+
+    createEnemies(enemies: string[]) {
+        let arrayOfEnemies: Enemy[] = enemies.map((enemy) => {
+            return enemyManager.getEnemyByName(enemy);
+        });
+
+        return arrayOfEnemies;
     }
 
     setupConnectedRooms(rooms: Room[], createdRooms: RoomCollection) {
@@ -71,10 +87,22 @@ export class Map {
         this.eventBus.onMapBus('move', (moveInfo: MovementData) => {
             let nameToSearchFor = moveInfo.connectedRoomName;
             let roomToMoveTo: Room = this.currentRoom.getRoomByName(nameToSearchFor);
+            let roomInfo = "";
             if(roomToMoveTo) {
-                logger.log("Foud the next room!");
                 this.currentRoom = roomToMoveTo;
-                this.eventBus.emitOnMenuBus('updateInfo', this.currentRoom.description);
+                let roomEnemies: Enemy[] = this.currentRoom.getEnemies();
+                if(roomEnemies) {
+                    roomInfo += this.currentRoom.description + "\n Shit! There are enemies in the room!\n";
+                    roomInfo += "The enemies are:";
+                    roomEnemies.forEach((enemy) => {
+                        logger.log(JSON.stringify(enemy));
+                        let enemyName = enemy.getName();
+                        roomInfo += "\n" + enemyName;
+                    });
+                } else {
+                    roomInfo += this.currentRoom.description;
+                }
+                this.eventBus.emitOnMenuBus('updateInfo', roomInfo);
             } else {
                 logger.log("Did not find the next room.");
             }

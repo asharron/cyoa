@@ -21,7 +21,9 @@ Dining Hall:
         connectedRooms:
                 - Entrance
                 - Scary Hallway
-        description: You smell something funny You are in the Dining Hall
+        description: Smells kinda funny in here
+        enemies:
+                - Goblin
 
 Scary Hallway:
         name: Scary Hallway

@@ -33,6 +33,9 @@ export class PlayerControls {
             case "look":
                 this.eventBus.emitOnMapBus('look', '');
                 break;
+            case "attack":
+                this.eventBus.emitOnMapBus('attack', '');
+                break;
             default:
                 this.eventBus.emitOnMenuBus('updateInfo', 'That command is not available');
                 break;

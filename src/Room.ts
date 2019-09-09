@@ -1,13 +1,17 @@
+import { Enemy } from "./Enemy";
+
 export class Room {
     name: string;
     description: string;
     connectedRoomNames: string[];
     connectedRooms: Room[];
+    enemies: Enemy[];
 
-    constructor(name: string, description: string, connectedRoomNames: string[]) {
+    constructor(name: string, description: string, connectedRoomNames: string[], enemies: Enemy[]) {
         this.name = name;
         this.description = description;
         this.connectedRoomNames = connectedRoomNames;
+        this.enemies = enemies;
     }
     
     getConnectedRoomNames() {
@@ -32,6 +36,10 @@ export class Room {
         }
 
         return null;
+    }
+
+    getEnemies() {
+        return this.enemies;
     }
 
     setConnectedRooms(connectedRooms: Room[]) {

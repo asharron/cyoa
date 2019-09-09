@@ -32,6 +32,7 @@ export class Menu {
 
         this.eventBus.onMenuBus('updateInfo', (data: any) => {
             this.infoWindow.infoBox.content = this.infoWindow.infoBox.content + data + "\n";
+            this.infoWindow.scrollToContent();
             this.drawMenu();
         });
     }

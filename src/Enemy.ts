@@ -6,8 +6,15 @@ export class Enemy {
     hitpoints: number;
     alive: boolean;
 
-    constructor() {
+    constructor(name: string, weapon: Weapon, hitpoints: number) {
+        this.name = name;
+        this.weapon = weapon;
+        this.hitpoints = hitpoints;
         this.alive = true;
+    }
+
+    getName() {
+        return this.name;
     }
 
     takeDamage(damage: number) {

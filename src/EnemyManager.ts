@@ -2,7 +2,9 @@ import fs = require('fs');
 import yaml = require('js-yaml');
 import { Enemy } from './Enemy';
 import { Logger } from './Logger';
-const logger = require('./Logger');
+import { WeaponManager } from './WeaponManager'
+const logger: Logger = require('./Logger');
+const weaponManager: WeaponManager = require('./WeaponManager');
 
 interface EnemyDB {
     [key: string]: Enemy;
@@ -12,13 +14,31 @@ export class EnemyManager {
     enemyDB: EnemyDB;
 
     constructor() {
+        this.enemyDB = {};
         this.readInEnemiesFile('enemies.yml');
     }
 
     readInEnemiesFile(filename: string) {
         let weaponsFile = fs.readFileSync(filename);
         let yamlString = weaponsFile.toString();
-        this.enemyDB = yaml.safeLoad(yamlString);
+        let enemyData = yaml.safeLoad(yamlString);
+        this.createEnemiesDB(enemyData);
+    }
+
+    createEnemiesDB(enemyData: any) {
+        let enemyList: Enemy[] = [];
+
+        Object.keys(enemyData).forEach((key: string) => {
+            let name = enemyData[key].name;
+            let weaponName = enemyData[key].weapon;
+            let weapon = weaponManager.getWeaponByName(weaponName);
+            let hitpoints = enemyData[key].hitpoints;
+
+            //Assign it to the enemyDB
+            let enemy = new Enemy(name, weapon, hitpoints);
+            this.enemyDB[key] = enemy;
+            enemyList.push(enemy);
+        });
     }
 
     getEnemyByName(enemyName: string) {
