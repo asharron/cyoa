@@ -35,6 +35,7 @@ export class PlayerControls {
                 break;
             default:
                 this.eventBus.emitOnMenuBus('updateInfo', 'That command is not available');
+                break;
         }
     }
 

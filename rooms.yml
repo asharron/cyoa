@@ -1,5 +1,6 @@
 Entrance:
         name: Entrance
+        status: open
         connectedRooms:
                 - Bathroom
                 - Dining Hall
@@ -8,12 +9,15 @@ Entrance:
 
 Bathroom:
         name: Bathroom
+        status: open
         connectedRooms:
                 - Entrance
         description: Nothing unusual here
+        search: You spot a key on the ground
 
 Dining Hall:
         name: Dining Hall
+        status: locked
         connectedRooms:
                 - Entrance
                 - Scary Hallway
@@ -21,6 +25,7 @@ Dining Hall:
 
 Scary Hallway:
         name: Scary Hallway
+        status: open
         connectedRooms:
                 - Entrance
                 - Dining Hall

@@ -4,6 +4,7 @@ import { InfoWindow } from './InfoWindow';
 import { PlayerControls } from '../controls/PlayerControls';
 import { EventBus } from '../EventBus';
 import { Logger } from '../Logger';
+import { HealthBar } from './healthbar';
 const shutdown = require('../Shutdown');
 const eventBus: EventBus = require('../EventBus');
 const logger: Logger = require('../Logger');
@@ -15,6 +16,7 @@ export class Menu {
     mainScreen: blessed.Widgets.Screen;
     commandWindow: CommandWindow;
     infoWindow: InfoWindow;
+    healthBar: HealthBar;
     eventBus: EventBus;
 
     constructor() {
@@ -37,6 +39,7 @@ export class Menu {
     createSubWindows = () => {
         this.commandWindow = new CommandWindow(this);
         this.infoWindow = new InfoWindow(this.mainScreen);
+        this.healthBar = new HealthBar(this.mainScreen);
     }
 
     setupKeyCommands = () => {
