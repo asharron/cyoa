@@ -14,6 +14,26 @@ export class Room {
         return this.connectedRoomNames;
     }
 
+    getConnectedRooms() {
+        return this.connectedRooms;
+    }
+    
+    getRoomName() {
+        return this.name;
+    }
+
+    getRoomByName(name: string) {
+        let foundRoom: Room;
+
+        for(let room of this.connectedRooms) {
+            if(room.getRoomName() === name) {
+                return room;
+            }
+        }
+
+        return null;
+    }
+
     setConnectedRooms(connectedRooms: Room[]) {
         this.connectedRooms = connectedRooms;
     }

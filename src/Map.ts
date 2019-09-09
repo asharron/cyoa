@@ -1,18 +1,25 @@
 import fs = require('fs');
 import yaml = require('js-yaml');
 import { Room } from './Room';
-import { create } from 'domain';
+import { EventBus } from './EventBus';
+import { MovementData } from './MovementData';
+import { Logger } from './Logger';
+const eventBus: EventBus = require('./EventBus');
+const logger: Logger = require('./Logger');
 
 interface RoomCollection {
     [key: string]: Room;
 }
-export class Dungeon {
+export class Map {
     rooms: Room[];
     entrance: Room;
     currentRoom: Room;
+    eventBus: EventBus;
 
     constructor(filename: string) {
+        this.eventBus = eventBus;
         this.createDungeon(filename);
+        this.setupListeners();
     }
 
     createDungeon(filename: string) {
@@ -24,6 +31,7 @@ export class Dungeon {
         this.rooms = finalRooms;
         this.entrance = this.rooms[0];
         this.currentRoom = this.entrance;
+        this.eventBus.emitOnMenuBus('updateInfo', this.currentRoom.description);
     }
 
     readInRooms(filename: string) {
@@ -59,4 +67,23 @@ export class Dungeon {
         return rooms;
     }
 
+    setupListeners() {
+        this.eventBus.onMapBus('move', (moveInfo: MovementData) => {
+            let nameToSearchFor = moveInfo.connectedRoomName;
+            let roomToMoveTo: Room = this.currentRoom.getRoomByName(nameToSearchFor);
+            if(roomToMoveTo) {
+                logger.log("Foud the next room!");
+                this.currentRoom = roomToMoveTo;
+                this.eventBus.emitOnMenuBus('updateInfo', this.currentRoom.description);
+            } else {
+                logger.log("Did not find the next room.");
+            }
+        });
+
+        this.eventBus.onMapBus('look', () => {
+            let connectedRooms = this.currentRoom.getConnectedRoomNames();
+            let msg = "You look around the room and see that you can move to: " + connectedRooms.join(", ");
+            this.eventBus.emitOnMenuBus('updateInfo', msg);
+        });
+    }
 }

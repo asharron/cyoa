@@ -1,5 +1,12 @@
 import blessed = require('blessed');
 import { CommandWindow } from './CommandWindow';
+import { InfoWindow } from './InfoWindow';
+import { PlayerControls } from '../controls/PlayerControls';
+import { EventBus } from '../EventBus';
+import { Logger } from '../Logger';
+const shutdown = require('../Shutdown');
+const eventBus: EventBus = require('../EventBus');
+const logger: Logger = require('../Logger');
 
 
 export class Menu {
@@ -7,24 +14,36 @@ export class Menu {
     height: number;
     mainScreen: blessed.Widgets.Screen;
     commandWindow: CommandWindow;
+    infoWindow: InfoWindow;
+    eventBus: EventBus;
 
     constructor() {
+        this.eventBus = eventBus;
+
         this.mainScreen = blessed.screen({
             smartCSR: true
         });
-        this.mainScreen.title = "Your listening to Big Bois Neighborhood";
-        this.createCommandWindow();
+        this.mainScreen.title = "Big Project";
+        this.createSubWindows();
         this.setupKeyCommands();
         this.drawMenu();
+
+        this.eventBus.onMenuBus('updateInfo', (data: any) => {
+            this.infoWindow.infoBox.content = this.infoWindow.infoBox.content + data + "\n";
+            this.drawMenu();
+        });
     }
 
-    createCommandWindow = () => {
-        this.commandWindow = new CommandWindow(this.mainScreen);
+    createSubWindows = () => {
+        this.commandWindow = new CommandWindow(this);
+        this.infoWindow = new InfoWindow(this.mainScreen);
     }
 
     setupKeyCommands = () => {
         this.mainScreen.key(['escape', 'q', 'C-c'], function (ch, key) {
-            return process.exit(0);
+            shutdown().then(() => {
+                process.exit(0);
+            });
         });
 
         this.mainScreen.key(['i'], (ch, key) => {
@@ -34,6 +53,14 @@ export class Menu {
 
     drawMenu() {
         this.mainScreen.render();
+    }
+
+    getScreen() {
+        return this.mainScreen;
+    }
+
+    passCommandToControls(command: string) {
+        this.eventBus.emitOnControlsBus("command", command);
     }
 
 }

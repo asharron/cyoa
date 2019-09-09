@@ -1,12 +1,8 @@
-import { Dungeon } from './Dungeon';
-import { Player } from './Player';
-import { Menu } from './menu/Menu';
+import { Engine } from './Engine';
 
 
 let main = () => {
-    let dungeon: Dungeon = new Dungeon('./rooms.yml');
-    let player: Player = new Player();
-    let menu: Menu = new Menu();
+    let gameEngine = new Engine();
 }
 
 main();
