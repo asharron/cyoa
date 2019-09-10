@@ -2,12 +2,12 @@ import blessed = require('blessed');
 import { CommandWindow } from './CommandWindow';
 import { InfoWindow } from './InfoWindow';
 import { PlayerControls } from '../controls/PlayerControls';
-import { EventBus } from '../EventBus';
-import { Logger } from '../Logger';
+import { EventBus } from '../utils/EventBus';
+import { Logger } from '../utils/Logger';
 import { HealthBar } from './healthbar';
 const shutdown = require('../Shutdown');
-const eventBus: EventBus = require('../EventBus');
-const logger: Logger = require('../Logger');
+const eventBus: EventBus = require('../utils/EventBus');
+const logger: Logger = require('../utils/Logger');
 
 
 export class Menu {

@@ -1,9 +1,9 @@
 import fs = require('fs');
 import yaml = require('js-yaml');
-import { Enemy } from './Enemy';
-import { Logger } from './Logger';
+import { Enemy } from '../Enemy';
+import { Logger } from '../../utils/Logger';
 import { WeaponManager } from './WeaponManager'
-const logger: Logger = require('./Logger');
+const logger: Logger = require('../../utils/Logger');
 const weaponManager: WeaponManager = require('./WeaponManager');
 
 interface EnemyDB {

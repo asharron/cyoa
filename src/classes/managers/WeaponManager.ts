@@ -1,7 +1,7 @@
 import fs = require('fs');
 import yaml = require('js-yaml');
-import { Weapon } from './Weapon';
-const logger = require('./Logger');
+import { Weapon } from '../Weapon';
+const logger = require('../../utils/Logger');
 
 interface WeaponDB {
     [key: string]: Weapon;

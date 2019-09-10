@@ -1,11 +1,11 @@
 import { EventEmitter } from 'events';
-import { EventBus } from '../EventBus';
-import { MovementData }  from '../MovementData';
-import { Logger } from '../Logger';
-import { Player } from '../Player';
-import { AttackData } from '../AttackData';
-const logger: Logger = require('../Logger');
-const eventBus: EventBus = require('../EventBus');
+import { EventBus } from '../utils/EventBus';
+import { MovementData }  from '../interfaces/MovementData';
+import { Logger } from '../utils/Logger';
+import { Player } from '../classes/Player';
+import { AttackData } from '../interfaces/AttackData';
+const logger: Logger = require('../utils/Logger');
+const eventBus: EventBus = require('../utils/EventBus');
 const player: Player = require('../Player');
 
 export class PlayerControls {
@@ -19,12 +19,10 @@ export class PlayerControls {
     }
 
     setupListeners() {
-        this.eventBus.onControlsBus('command', (command: string) => {
-            this.processCommand(command);
-        });
+        this.eventBus.onControlsBus('command', this.processCommand);
     }
 
-    processCommand(command: string) {
+    processCommand = (command: string) => {
         let commandType = this.getCommandType(command);
         
         switch(commandType) {

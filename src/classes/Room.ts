@@ -26,9 +26,7 @@ export class Room {
         return this.name;
     }
 
-    getRoomByName(name: string) {
-        let foundRoom: Room;
-
+    getConnectedRoomByName(name: string) {
         for(let room of this.connectedRooms) {
             if(room.getRoomName() === name) {
                 return room;

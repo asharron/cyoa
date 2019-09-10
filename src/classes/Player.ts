@@ -1,9 +1,9 @@
 import { Item } from './Item';
 import { Weapon } from './Weapon';
-import { WeaponManager } from './WeaponManager';
-import { Logger } from './Logger';
-const weaponManager: WeaponManager = require('./WeaponManager');
-const logger: Logger = require('./Logger');
+import { WeaponManager } from './managers/WeaponManager';
+import { Logger } from '../utils/Logger';
+const weaponManager: WeaponManager = require('./managers/WeaponManager');
+const logger: Logger = require('../utils/Logger');
 
 export class Player {
     name: string;
