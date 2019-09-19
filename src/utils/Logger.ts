@@ -1,4 +1,6 @@
 import fs = require('fs');
+import { EventBus } from './EventBus';
+const eventBus: EventBus = require('./EventBus');
 
 export class Logger {
 
@@ -18,6 +20,7 @@ export class Logger {
 
     log(msg: string) {
         fs.writeSync(this.logFile, msg + "\n");
+        eventBus.emitOnMenuBus('log', msg);
     }
 
     close() {

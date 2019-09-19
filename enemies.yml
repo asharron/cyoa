@@ -2,3 +2,12 @@ Goblin:
     name: Goblin
     hitpoints: 10
     weapon: Sword
+    moves:
+        - Swing:
+            name: Swing
+            damage: 5
+            chance: 0.3
+        - Growl:
+            name: Growl
+            damage: 0
+            chance: 0.7

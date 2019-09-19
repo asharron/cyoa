@@ -3,6 +3,7 @@ import yaml = require('js-yaml');
 import { Enemy } from '../Enemy';
 import { Logger } from '../../utils/Logger';
 import { WeaponManager } from './WeaponManager'
+import { Move } from '../Move';
 const logger: Logger = require('../../utils/Logger');
 const weaponManager: WeaponManager = require('./WeaponManager');
 
@@ -26,17 +27,24 @@ export class EnemyManager {
     }
 
     createEnemiesDB(enemyData: any) {
-        let enemyList: Enemy[] = [];
+        let enemyDataKeys = Object.keys(enemyData);
 
-        Object.keys(enemyData).forEach((key: string) => {
+        enemyDataKeys.forEach((key: string) => {
             let name = enemyData[key].name;
             let weaponName = enemyData[key].weapon;
             let weapon = weaponManager.getWeaponByName(weaponName);
             let hitpoints = enemyData[key].hitpoints;
+            //This is an array of [{'Sword: {}}, { 'growl': {}}]
+            //I want just the inner object [{}, {}];
+            let moves: Move[] = [];
+            enemyData[key].moves.forEach((move: any) => {
+                Object.keys(move).forEach(key => {
+                    moves.push(move[key]);
+                })
+            });
 
-            let enemy = new Enemy(name, weapon, hitpoints);
+            let enemy = new Enemy(name, weapon, hitpoints, moves);
             this.enemyDB[key] = enemy;
-            enemyList.push(enemy);
         });
     }
 

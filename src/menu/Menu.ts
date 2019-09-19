@@ -5,6 +5,7 @@ import { PlayerControls } from '../controls/PlayerControls';
 import { EventBus } from '../utils/EventBus';
 import { Logger } from '../utils/Logger';
 import { HealthBar } from './healthbar';
+import { LogWindow } from './LogWindow';
 const shutdown = require('../Shutdown');
 const eventBus: EventBus = require('../utils/EventBus');
 const logger: Logger = require('../utils/Logger');
@@ -18,6 +19,7 @@ export class Menu {
     infoWindow: InfoWindow;
     healthBar: HealthBar;
     eventBus: EventBus;
+    logWindow: LogWindow;
 
     constructor() {
         this.eventBus = eventBus;
@@ -30,17 +32,14 @@ export class Menu {
         this.setupKeyCommands();
         this.drawMenu();
 
-        this.eventBus.onMenuBus('updateInfo', (data: any) => {
-            this.infoWindow.infoBox.content = this.infoWindow.infoBox.content + data + "\n";
-            this.infoWindow.scrollToContent();
-            this.drawMenu();
-        });
+        this.setupEventBusListeners();
     }
 
     createSubWindows = () => {
         this.commandWindow = new CommandWindow(this);
         this.infoWindow = new InfoWindow(this.mainScreen);
         this.healthBar = new HealthBar(this.mainScreen);
+        this.logWindow = new LogWindow(this.mainScreen);
     }
 
     setupKeyCommands = () => {
@@ -65,6 +64,23 @@ export class Menu {
 
     passCommandToControls(command: string) {
         this.eventBus.emitOnControlsBus("command", command);
+    }
+
+    setupEventBusListeners() {
+        this.eventBus.onMenuBus('updateInfo', this.handleUpdateInfo);
+        this.eventBus.onMenuBus('log', this.handleLogUpdate);
+    }
+
+    handleUpdateInfo = (msg: string) => {
+            this.infoWindow.addContent(msg);
+            this.infoWindow.scrollToContent();
+            this.drawMenu();
+    }
+
+    handleLogUpdate = (msg: string) => {
+        this.logWindow.addContent(msg);
+        this.logWindow.scrollToContent();
+        this.drawMenu();
     }
 
 }

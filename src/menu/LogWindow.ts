@@ -1,14 +1,13 @@
 import blessed = require('blessed');
 
-export class InfoWindow {
-
-    infoBox: blessed.Widgets.BoxElement;
+export class LogWindow {
+    logBox: blessed.Widgets.BoxElement;
 
     constructor(mainScreen: blessed.Widgets.Screen) {
-        this.infoBox = blessed.box({
+        this.logBox = blessed.box({
             top: '30%',
-            left: 'center',
-            width: '50%',
+            left: 'left',
+            width: '25%',
             height: '50%',
             scrollable: true,
             alwaysScroll: true,
@@ -20,10 +19,10 @@ export class InfoWindow {
                 type: 'line'
             },
             style: {
-                fg: 'black',
-                bg: 'green',
+                fg: 'white',
+                bg: 'black',
                 border: {
-                    fg: 'green'
+                    fg: 'white'
                 },
                 scrollbar: {
                     fg: 'red',
@@ -32,14 +31,14 @@ export class InfoWindow {
             }
         });
 
-        mainScreen.append(this.infoBox);
+        mainScreen.append(this.logBox);
     }
 
     addContent(msg: string) {
-        this.infoBox.content = this.infoBox.content + msg + "\n";
+        this.logBox.content = this.logBox.content + msg + "\n";
     }
 
     scrollToContent() {
-        this.infoBox.scroll(100);
+        this.logBox.scroll(100);
     }
 }

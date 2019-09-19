@@ -7,9 +7,11 @@ import { Logger } from '../../utils/Logger';
 import { Enemy } from '../Enemy';
 import { EnemyManager } from '../managers/EnemyManager';
 import { AttackData } from '../../interfaces/AttackData';
+import { Player } from '../Player';
 const eventBus: EventBus = require('../../utils/EventBus');
 const logger: Logger = require('../../utils/Logger');
 const enemyManager: EnemyManager = require('../managers/EnemyManager');
+const player: Player = require('../Player');
 
 interface RoomCollection {
     [key: string]: Room;
@@ -30,8 +32,8 @@ export class Map {
         let rooms: any[] = this.readInRooms(filename);
         let createdRooms: RoomCollection = this.createRoomsFromData(rooms);
         let allRooms: Room[] = Object.values(createdRooms);
-
         let finalRooms: Room[] = this.setupConnectedRooms(allRooms, createdRooms);
+
         this.rooms = finalRooms;
         this.entrance = this.rooms[0];
         this.currentRoom = this.entrance;
@@ -121,7 +123,6 @@ export class Map {
             roomInfo += "\nShit! There are enemies in the room!\n";
             roomInfo += "The enemies are:";
             roomEnemies.forEach((enemy) => {
-                logger.log(JSON.stringify(enemy));
                 let enemyName = enemy.getName();
                 roomInfo += "\n " + enemyName;
             });
@@ -144,18 +145,37 @@ export class Map {
     handleAttack = (attackData: AttackData) => {
         let attackedEnemy = this.getEnemyByName(attackData.enemyName);
         let msg;
+
         if (attackedEnemy && attackedEnemy.isAlive()) {
-            msg = `You swing at ${attackData.enemyName} with your ${attackData.weaponName} for ${attackData.damage} pts of damage`;
-            attackedEnemy.takeDamage(attackData.damage);
-            if (!attackedEnemy.isAlive()) {
-                msg += `\nYou just slaughtered ${attackData.enemyName}!`;
-            } else {
-                msg += `\nOh shit! ${attackData.enemyName} is mad now!`;
-            }
+            msg = this.calculateDamage(attackedEnemy, attackData);
         } else {
             logger.log("Could not find the enemy in the room " + attackData.enemyName);
             msg = `Sorry, that enemy is not in the room`;
         }
+        this.eventBus.emitOnMenuBus('updateInfo', msg);
+        
+        this.enemyAttack(attackedEnemy);
+    }
+
+    calculateDamage(attackedEnemy: Enemy, attackData: AttackData) {
+        let msg = `You swing at ${attackData.enemyName} with your ${attackData.weaponName} for ${attackData.damage} pts of damage`;
+        attackedEnemy.takeDamage(attackData.damage);
+
+        if (!attackedEnemy.isAlive()) {
+            msg += `\nYou just slaughtered ${attackData.enemyName}!`;
+        } else {
+            msg += `\nOh shit! ${attackData.enemyName} is mad now!`;
+        }
+        return msg;
+    }
+
+    enemyAttack(enemy: Enemy) {
+        let enemyAttackData = enemy.attack();
+        logger.log("Here is the attack data: " + JSON.stringify(enemyAttackData))
+
+        let msg = `${enemy.getName()} attacks you using ${enemyAttackData.move.name} for ${enemyAttackData.move.damage} pts of damage!`;
+        player.takeDamage(enemyAttackData.move.damage);
+        
         this.eventBus.emitOnMenuBus('updateInfo', msg);
     }
 }
